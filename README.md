@@ -1,1 +1,401 @@
 # vxlan-friendly-diagram
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VXLAN Network Blueprint - Simple View</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulse-dash {
+      0% {
+        stroke-dashoffset: 0;
+      }
+      100% {
+        stroke-dashoffset: -25;
+      }
+    }
+    .animate-pulse-dash {
+      animation: pulse-dash 1s linear infinite;
+    }
+    .delay-500 {
+      animation-delay: 0.5s;
+    }
+    .delay-1000 {
+      animation-delay: 1s;
+    }
+    .delay-1500 {
+      animation-delay: 1.5s;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+  <div class="container mx-auto px-4 py-10">
+    <h1 class="text-4xl font-bold text-center mb-10 text-blue-900">
+      VXLAN Network Blueprint — Simple View
+    </h1>
+
+    <div class="text-center mb-10">
+      <button
+        id="flowButton"
+        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+      >
+        Show Message Flow
+      </button>
+    </div>
+
+    <div
+      class="relative max-w-7xl mx-auto bg-white rounded-xl shadow-lg p-10"
+      style="min-height: 850px"
+    >
+      <!-- Spine Layer - Lobby -->
+      <div class="flex justify-center gap-20 mb-20">
+        <div class="text-center">
+          <div
+            class="bg-blue-700 text-white font-bold rounded-lg px-6 py-3 shadow-lg mb-2"
+          >
+            Lobby (Spine 1)
+          </div>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+            alt="Lobby - Spine Switch"
+            class="mx-auto w-24 h-24"
+          />
+          <div class="mt-2 text-sm text-gray-700 max-w-xs mx-auto">
+            The main hallway connecting all floors. Routes messages quickly.
+          </div>
+        </div>
+        <div class="text-center">
+          <div
+            class="bg-blue-700 text-white font-bold rounded-lg px-6 py-3 shadow-lg mb-2"
+          >
+            Lobby (Spine 2)
+          </div>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+            alt="Lobby - Spine Switch"
+            class="mx-auto w-24 h-24"
+          />
+          <div class="mt-2 text-sm text-gray-700 max-w-xs mx-auto">
+            A second hallway for redundancy and faster routing.
+          </div>
+        </div>
+      </div>
+
+      <!-- Spine to Leaf Connections -->
+      <svg
+        class="absolute top-40 left-0 w-full h-48 pointer-events-none"
+        style="z-index: 0"
+      >
+        <line
+          x1="30%"
+          y1="0"
+          x2="10%"
+          y2="100%"
+          stroke="#2563eb"
+          stroke-width="3"
+        />
+        <line
+          x1="30%"
+          y1="0"
+          x2="50%"
+          y2="100%"
+          stroke="#2563eb"
+          stroke-width="3"
+        />
+        <line
+          x1="30%"
+          y1="0"
+          x2="90%"
+          y2="100%"
+          stroke="#2563eb"
+          stroke-width="3"
+        />
+        <line
+          x1="70%"
+          y1="0"
+          x2="10%"
+          y2="100%"
+          stroke="#2563eb"
+          stroke-width="3"
+        />
+        <line
+          x1="70%"
+          y1="0"
+          x2="50%"
+          y2="100%"
+          stroke="#2563eb"
+          stroke-width="3"
+        />
+        <line
+          x1="70%"
+          y1="0"
+          x2="90%"
+          y2="100%"
+          stroke="#2563eb"
+          stroke-width="3"
+        />
+      </svg>
+
+      <!-- Leaf Layer - Floors -->
+      <div class="flex justify-between mb-20">
+        <div class="text-center">
+          <div
+            class="bg-green-600 text-white font-bold rounded-lg px-6 py-3 shadow-lg mb-2"
+          >
+            Floor 1 (Leaf 1)
+          </div>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+            alt="Floor 1 - Leaf Switch"
+            class="mx-auto w-20 h-20"
+          />
+          <div class="mt-2 text-sm text-gray-700 max-w-xs mx-auto">
+            The floor where Room A (VM A) is located. Handles message wrapping.
+          </div>
+        </div>
+        <div class="text-center">
+          <div
+            class="bg-green-600 text-white font-bold rounded-lg px-6 py-3 shadow-lg mb-2"
+          >
+            Floor 2 (Leaf 2)
+          </div>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+            alt="Floor 2 - Leaf Switch"
+            class="mx-auto w-20 h-20"
+          />
+          <div class="mt-2 text-sm text-gray-700 max-w-xs mx-auto">
+            The floor where Room B (VM B) is located. Handles message unwrapping.
+          </div>
+        </div>
+        <div class="text-center">
+          <div
+            class="bg-green-600 text-white font-bold rounded-lg px-6 py-3 shadow-lg mb-2"
+          >
+            Floor 3 (Leaf 3)
+          </div>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2991/2991148.png"
+            alt="Floor 3 - Leaf Switch"
+            class="mx-auto w-20 h-20"
+          />
+          <div class="mt-2 text-sm text-gray-700 max-w-xs mx-auto">
+            The floor where Room C (VM C) is located.
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaf to VM Connections -->
+      <svg
+        class="absolute top-[520px] left-0 w-full h-40 pointer-events-none"
+        style="z-index: 0"
+      >
+        <line
+          x1="10%"
+          y1="0"
+          x2="10%"
+          y2="100%"
+          stroke="#16a34a"
+          stroke-width="3"
+        />
+        <line
+          x1="50%"
+          y1="0"
+          x2="50%"
+          y2="100%"
+          stroke="#16a34a"
+          stroke-width="3"
+        />
+        <line
+          x1="90%"
+          y1="0"
+          x2="90%"
+          y2="100%"
+          stroke="#16a34a"
+          stroke-width="3"
+        />
+      </svg>
+
+      <!-- VM Layer - Rooms -->
+      <div class="flex justify-between">
+        <div class="text-center">
+          <div
+            class="bg-yellow-500 text-white font-bold rounded-lg px-6 py-3 shadow-lg mb-2"
+          >
+            Room A (VM A)
+          </div>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/4144/4144476.png"
+            alt="Room A - Virtual Machine"
+            class="mx-auto w-16 h-16"
+          />
+          <div class="mt-2 text-sm text-gray-700 max-w-xs mx-auto">
+            A computer that wants to send a message to Room B.
+          </div>
+        </div>
+        <div class="text-center">
+          <div
+            class="bg-yellow-500 text-white font-bold rounded-lg px-6 py-3 shadow-lg mb-2"
+          >
+            Room B (VM B)
+          </div>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/4144/4144476.png"
+            alt="Room B - Virtual Machine"
+            class="mx-auto w-16 h-16"
+          />
+          <div class="mt-2 text-sm text-gray-700 max-w-xs mx-auto">
+            The computer that receives the message from Room A.
+          </div>
+        </div>
+        <div class="text-center">
+          <div
+            class="bg-yellow-500 text-white font-bold rounded-lg px-6 py-3 shadow-lg mb-2"
+          >
+            Room C (VM C)
+          </div>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/4144/4144476.png"
+            alt="Room C - Virtual Machine"
+            class="mx-auto w-16 h-16"
+          />
+          <div class="mt-2 text-sm text-gray-700 max-w-xs mx-auto">
+            Another computer on a different floor.
+          </div>
+        </div>
+      </div>
+
+      <!-- Message Flow Animation (Hidden initially) -->
+      <div
+        id="flowAnimation"
+        class="absolute top-0 left-0 w-full h-full pointer-events-none hidden"
+        style="z-index: 10"
+      >
+        <svg class="w-full h-full">
+          <!-- Room A to Floor 1 -->
+          <line
+            id="line1"
+            x1="10%"
+            y1="85%"
+            x2="10%"
+            y2="75%"
+            stroke="#ef4444"
+            stroke-width="6"
+            stroke-dasharray="15 10"
+            class="animate-pulse-dash"
+          />
+          <!-- Floor 1 to Lobby 1 -->
+          <line
+            id="line2"
+            x1="10%"
+            y1="75%"
+            x2="30%"
+            y2="35%"
+            stroke="#ef4444"
+            stroke-width="6"
+            stroke-dasharray="15 10"
+            class="animate-pulse-dash delay-500"
+          />
+          <!-- Lobby 1 to Floor 2 -->
+          <line
+            id="line3"
+            x1="30%"
+            y1="35%"
+            x2="50%"
+            y2="75%"
+            stroke="#ef4444"
+            stroke-width="6"
+            stroke-dasharray="15 10"
+            class="animate-pulse-dash delay-1000"
+          />
+          <!-- Floor 2 to Room B -->
+          <line
+            id="line4"
+            x1="50%"
+            y1="75%"
+            x2="50%"
+            y2="85%"
+            stroke="#ef4444"
+            stroke-width="6"
+            stroke-dasharray="15 10"
+            class="animate-pulse-dash delay-1500"
+          />
+        </svg>
+      </div>
+
+      <!-- Explanation Section (Hidden initially) -->
+      <div
+        id="explanation"
+        class="mt-16 space-y-8 max-w-4xl mx-auto text-left text-gray-800 hidden"
+      >
+        <h2 class="text-3xl font-bold text-red-600 mb-6">How the Message Travels</h2>
+
+        <section>
+          <h3 class="text-xl font-semibold mb-2">1. Room A sends a message</h3>
+          <p>
+            Room A (VM A) wants to say hello to Room B (VM B). It sends the message to Floor 1 (Leaf 1).
+          </p>
+        </section>
+
+        <section>
+          <h3 class="text-xl font-semibold mb-2">2. Floor 1 wraps the message</h3>
+          <p>
+            Floor 1 puts the message inside a special envelope with the address of Floor 2, so the lobby knows where to send it.
+          </p>
+        </section>
+
+        <section>
+          <h3 class="text-xl font-semibold mb-2">3. The lobby routes the message</h3>
+          <p>
+            The lobby (Spine switches) quickly sends the message to Floor 2 using the best hallway.
+          </p>
+        </section>
+
+        <section>
+          <h3 class="text-xl font-semibold mb-2">4. Floor 2 unwraps and delivers</h3>
+          <p>
+            Floor 2 opens the envelope and gives the message to Room B, who receives it as if Room A was right next door.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-3xl font-bold text-green-700 mt-12 mb-4">Benefits of This Network</h2>
+          <ul class="list-disc list-inside space-y-2 text-lg">
+            <li><strong>No traffic jams:</strong> The lobby uses all hallways at once, so messages don’t get stuck.</li>
+            <li><strong>Rooms can move floors without changing addresses:</strong> If Room A moves to another floor, it can still talk without changing its phone number.</li>
+            <li><strong>Big building, many rooms:</strong> This system can handle millions of invisible networks, much more than traditional methods.</li>
+            <li><strong>Fast and reliable:</strong> Multiple hallways and floors mean messages always find the quickest path.</li>
+            <li><strong>Easy to manage:</strong> The network hides complexity so rooms can communicate simply and securely.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("flowButton").addEventListener("click", function () {
+      const flowAnimation = document.getElementById("flowAnimation");
+      const explanation = document.getElementById("explanation");
+      const button = document.getElementById("flowButton");
+
+      if (flowAnimation.classList.contains("hidden")) {
+        // Show flow
+        flowAnimation.classList.remove("hidden");
+        explanation.classList.remove("hidden");
+        button.textContent = "Hide Message Flow";
+        button.classList.add("bg-red-600", "hover:bg-red-700");
+        button.classList.remove("bg-blue-600", "hover:bg-blue-700");
+      } else {
+        // Hide flow
+        flowAnimation.classList.add("hidden");
+        explanation.classList.add("hidden");
+        button.textContent = "Show Message Flow";
+        button.classList.remove("bg-red-600", "hover:bg-red-700");
+        button.classList.add("bg-blue-600", "hover:bg-blue-700");
+      }
+    });
+  </script>
+</body>
+</html>
